@@ -8,6 +8,7 @@ Production-grade slash commands for [Claude Code](https://docs.anthropic.com/en/
 |---|---|
 | `/elite-implementation` | Phased implementation workflow: understand → blast-radius analysis → plan → implement → self-review. No code is written until you approve the plan. |
 | `/elite-review` | Comprehensive PR code review across 12 dimensions (correctness, security, ORM, concurrency, architecture, etc.) with severity-rated findings. |
+| `/elite-django-implementation` | Django/DRF-specific implementation enforcing service-layer architecture, N+1 prevention, security hardening, Celery best practices, and the 2025-2026 community consensus. |
 
 ## Quick Setup
 
@@ -23,6 +24,9 @@ curl -sL https://raw.githubusercontent.com/VisionOra/claude-coding-agents/main/e
 
 curl -sL https://raw.githubusercontent.com/VisionOra/claude-coding-agents/main/elite-review.md \
   -o ~/.claude/commands/elite-review.md
+
+curl -sL https://raw.githubusercontent.com/VisionOra/claude-coding-agents/main/elite-django-implementation.md \
+  -o ~/.claude/commands/elite-django-implementation.md
 ```
 
 ### Option B: Per-project (scoped to one repo)
@@ -36,12 +40,15 @@ curl -sL https://raw.githubusercontent.com/VisionOra/claude-coding-agents/main/e
 
 curl -sL https://raw.githubusercontent.com/VisionOra/claude-coding-agents/main/elite-review.md \
   -o .claude/commands/elite-review.md
+
+curl -sL https://raw.githubusercontent.com/VisionOra/claude-coding-agents/main/elite-django-implementation.md \
+  -o .claude/commands/elite-django-implementation.md
 ```
 
 ### Option C: One-liner (global)
 
 ```bash
-mkdir -p ~/.claude/commands && for f in elite-implementation elite-review; do curl -sL "https://raw.githubusercontent.com/VisionOra/claude-coding-agents/main/${f}.md" -o ~/.claude/commands/${f}.md; done
+mkdir -p ~/.claude/commands && for f in elite-implementation elite-review elite-django-implementation; do curl -sL "https://raw.githubusercontent.com/VisionOra/claude-coding-agents/main/${f}.md" -o ~/.claude/commands/${f}.md; done
 ```
 
 ## Usage
@@ -54,6 +61,10 @@ Open Claude Code in any project and run:
 
 ```
 /elite-review 42
+```
+
+```
+/elite-django-implementation Add a paginated product search API with filtering
 ```
 
 ### `/elite-implementation <task description>`
@@ -90,6 +101,21 @@ Findings are rated by severity:
 - 🟠 **MAJOR** — Should fix before merge
 - 🟡 **MINOR** — Fix soon
 - 🔵 **SUGGESTION** — Optional improvement
+
+### `/elite-django-implementation <task description>`
+
+Django/DRF-specific implementation command covering 8 areas:
+
+| # | Area | What It Enforces |
+|---|---|---|
+| 1 | Security | OWASP-aligned settings, Argon2id, CSRF/XSS/SQLi prevention, `check --deploy` |
+| 2 | DRF Patterns | Separate read/write serializers, throttling, pagination, drf-spectacular |
+| 3 | ORM Performance | `select_related`/`prefetch_related`, `F()`/`Q()`, bulk ops, query count assertions |
+| 4 | Architecture | Service/selector layer, thin views, `@transaction.atomic`, split settings |
+| 5 | Celery | Idempotent tasks, pass IDs, acks_late, backoff+jitter, `on_commit` |
+| 6 | Testing | pytest-django, factory_boy, `assertNumQueries`, mocked externals |
+| 7 | Deployment | Gunicorn+nginx+WhiteNoise+PostgreSQL+Redis, backward-compatible migrations |
+| 8 | Code Quality | ruff, mypy+django-stubs, type hints, pre-commit |
 
 ## Requirements
 
